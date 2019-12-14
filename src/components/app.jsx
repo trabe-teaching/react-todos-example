@@ -8,16 +8,14 @@ import TodoList from "./todo-list";
 
 const App = () => (
   <AppState>
-    {({ todos, counters, addTodo, updateTodo, removeTodo }) => (
-      <Theme>
-        <Page title="Awesome todos!">
-          <Header counters={counters} onAddTodo={addTodo} />
-          <Content>
-            <TodoList todos={todos} onUpdateTodo={updateTodo} onRemoveTodo={removeTodo} />
-          </Content>
-        </Page>
-      </Theme>
-    )}
+    <Theme>
+      <Page title="Awesome todos!">
+        <Header />
+        <Content>
+          <TodoList />
+        </Content>
+      </Page>
+    </Theme>
   </AppState>
 );
 

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { withState } from "./app-state";
 
 const Counters = ({ counters: { pending, done } }) => (
   <div>
@@ -14,4 +15,4 @@ Counters.propTypes = {
   }).isRequired,
 };
 
-export default Counters;
+export default withState(Counters);

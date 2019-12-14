@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component, createContext } from "react";
 
 const initialTodos = Array.from(Array(10), (_, i) => ({
   id: i,
@@ -12,6 +12,8 @@ const pendingTodo = todo => todo.pending;
 const doneTodo = not(pendingTodo);
 const countPendingTodos = count(pendingTodo);
 const countDoneTodos = count(doneTodo);
+
+const StateContext = createContext({});
 
 class AppState extends Component {
   state = {
@@ -50,8 +52,16 @@ class AppState extends Component {
       removeTodo: this.removeTodo,
     };
 
-    return this.props.children(api);
+    return <StateContext.Provider value={api}>{this.props.children}</StateContext.Provider>;
   }
 }
+
+export const WithState = ({ children }) => <StateContext.Consumer>{api => children(api)}</StateContext.Consumer>;
+
+export const withState = Comp => {
+  const Wrapper = props => <WithState>{api => <Comp {...api} {...props} />}</WithState>;
+  Wrapper.displayName = `WithState(${Comp.name || Comp.displayName})`;
+  return Wrapper;
+};
 
 export default AppState;
