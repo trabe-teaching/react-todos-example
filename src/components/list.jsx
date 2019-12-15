@@ -9,7 +9,7 @@ const List = ({ data, fallback = <p>No data</p>, children }) =>
   ) : (
     <ul className={styles.List}>
       {data.map((item, i) => (
-        <li className={styles.ListItem} key={i}>
+        <li className={styles.ListItem} key={item.id || i}>
           {children(item)}
         </li>
       ))}
