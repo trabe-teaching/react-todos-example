@@ -1,0 +1,10 @@
+.Error {
+  box-sizing: border-box;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  background: #ffb8b1;
+  border-top: 4px solid #b00;
+  padding: 40px 80px;
+}
