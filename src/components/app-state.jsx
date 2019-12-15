@@ -1,6 +1,6 @@
 import React, { Component, createContext } from "react";
 
-const initialTodos = Array.from(Array(10), (_, i) => ({
+const initialTodos = Array.from(Array(2), (_, i) => ({
   id: i,
   text: `Todo ${i}`,
   pending: true,
