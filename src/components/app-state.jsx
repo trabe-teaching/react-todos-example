@@ -52,7 +52,13 @@ class AppState extends Component {
   });
 
   componentDidMount() {
-    initialTodos().then(todos => this.setState({ loading: false, todos }));
+    initialTodos()
+      .then(todos => this.setState({ loading: false, todos }))
+      .catch(() =>
+        this.setState(() => {
+          throw new Error("Cannot load todos");
+        }),
+      );
   }
 
   render() {
