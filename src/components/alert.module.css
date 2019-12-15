@@ -1,0 +1,40 @@
+.Backdrop {
+  background: #000;
+  opacity: 0.5;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.Alert {
+  box-sizing: border-box;
+  width: 300px;
+  height: 200px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  background: #fff;
+  padding: 40px;
+  display: flex;
+  flex-flow: column nowrap;
+  border-radius: 4px;
+}
+
+.AlertContent {
+  flex-grow: 1;
+}
+
+.AlertButtons {
+  padding-top: 10px;
+  border-top: 2px solid #ddd;
+  text-align: right;
+}
+
+.AlertButtons > button {
+  border-radius: 4px;
+}
+
+

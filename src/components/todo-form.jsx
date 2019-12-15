@@ -1,6 +1,7 @@
 import React, { Component, createRef } from "react";
 import styles from "./todo-form.module.css";
 import { withState } from "./app-state";
+import { alert } from "./alert";
 
 class TodoForm extends Component {
   state = {
@@ -24,12 +25,16 @@ class TodoForm extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.addTodo({ text: this.state.task, pending: this.state.pending });
-    this.setState({
-      task: "",
-      pending: true,
-    });
-    this.taskRef.current.focus();
+    if (this.state.task === "") {
+      alert("Cannot add empty todo").then(() => this.taskRef.current.focus());
+    } else {
+      this.props.addTodo({ text: this.state.task, pending: this.state.pending });
+      this.setState({
+        task: "",
+        pending: true,
+      });
+      this.taskRef.current.focus();
+    }
   };
 
   componentDidMount() {
