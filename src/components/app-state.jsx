@@ -1,10 +1,17 @@
 import React, { Component, createContext } from "react";
 
-const initialTodos = Array.from(Array(2), (_, i) => ({
-  id: i,
-  text: `Todo ${i}`,
-  pending: true,
-}));
+const initialTodos = () =>
+  new Promise(resolve =>
+    setTimeout(() => {
+      resolve(
+        Array.from(Array(2), (_, i) => ({
+          id: i,
+          text: `Todo ${i}`,
+          pending: true,
+        })),
+      );
+    }, 2000),
+  );
 
 const count = predicate => array => array.filter(predicate).length;
 const not = pred => (...args) => !pred(...args);
@@ -17,7 +24,8 @@ const StateContext = createContext({});
 
 class AppState extends Component {
   state = {
-    todos: initialTodos,
+    loading: true,
+    todos: [],
   };
 
   addTodo = todo => {
@@ -43,8 +51,13 @@ class AppState extends Component {
     done: countDoneTodos(this.state.todos),
   });
 
+  componentDidMount() {
+    initialTodos().then(todos => this.setState({ loading: false, todos }));
+  }
+
   render() {
     const api = {
+      loading: this.state.loading,
       todos: this.state.todos,
       counters: this.getCounters(),
       addTodo: this.addTodo,

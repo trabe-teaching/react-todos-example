@@ -1,7 +1,24 @@
-.NoTodos {
+.NoTodos, .LoadingTodos {
   text-align: center;
   display: block;
   padding: 20px;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.2;
+  }
+}
+
+
+.LoadingTodos {
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 .ChangeStateButton {

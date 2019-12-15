@@ -12,8 +12,17 @@ const ChangeStateButton = ({ checked, onChange }) => (
 
 const TodoList = () => (
   <WithState>
-    {({ todos, updateTodo, removeTodo }) => (
-      <List data={todos} fallback={<p className={styles.NoTodos}>No todos! well done!</p>}>
+    {({ loading, todos, updateTodo, removeTodo }) => (
+      <List
+        data={todos}
+        fallback={
+          loading ? (
+            <p className={styles.LoadingTodos}>Loading...</p>
+          ) : (
+            <p className={styles.NoTodos}>No todos! well done!</p>
+          )
+        }
+      >
         {todo => (
           <Todo
             todo={todo}
