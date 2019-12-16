@@ -9,6 +9,10 @@ class Todo extends Component {
     confirmingRemove: false,
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.todo !== this.props.todo || nextState.confirmingRemove !== this.state.confirmingRemove;
+  }
+
   render() {
     const {
       todo: { id, text, pending },

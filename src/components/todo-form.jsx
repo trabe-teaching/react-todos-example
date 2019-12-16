@@ -37,6 +37,10 @@ class TodoForm extends Component {
     }
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.task !== this.state.task || nextState.pending !== this.state.pending;
+  }
+
   componentDidMount() {
     this.taskRef.current.focus();
   }
