@@ -1,4 +1,5 @@
-import React, { Component, createContext } from "react";
+import React, { createContext, useReducer, useEffect, useContext } from "react";
+import useEffectError from "../hooks/use-effect-error";
 
 const initialTodos = () =>
   new Promise(resolve =>
@@ -20,60 +21,75 @@ const doneTodo = not(pendingTodo);
 const countPendingTodos = count(pendingTodo);
 const countDoneTodos = count(doneTodo);
 
+const getCounters = todos => ({
+  pending: countPendingTodos(todos),
+  done: countDoneTodos(todos),
+});
+
 const StateContext = createContext({});
 
-class AppState extends Component {
-  state = {
-    loading: true,
-    todos: [],
-  };
+const appStateReducer = (state, action) => {
+  switch (action.type) {
+    case "LOAD_TODOS":
+      return {
+        ...state,
+        loading: false,
+        todos: action.todos,
+      };
 
-  addTodo = todo => {
-    this.setState(prevState => ({
-      todos: [{ id: new Date().getTime(), ...todo }, ...prevState.todos],
-    }));
-  };
+    case "ADD_TODO":
+      return {
+        ...state,
+        todos: [{ id: new Date().getTime(), ...action.todo }, ...state.todos],
+      };
 
-  updateTodo = (id, pending) => {
-    this.setState(prevState => ({
-      todos: prevState.todos.map(todo => (todo.id === id ? { ...todo, pending } : todo)),
-    }));
-  };
+    case "UPDATE_TODO":
+      return {
+        ...state,
+        todos: state.todos.map(todo => (todo.id === action.id ? { ...todo, pending: action.pending } : todo)),
+      };
 
-  removeTodo = id => {
-    this.setState(prevState => ({
-      todos: prevState.todos.filter(todo => todo.id !== id),
-    }));
-  };
+    case "REMOVE_TODO":
+      return {
+        ...state,
+        todos: state.todos.filter(todo => todo.id !== action.id),
+      };
 
-  getCounters = () => ({
-    pending: countPendingTodos(this.state.todos),
-    done: countDoneTodos(this.state.todos),
-  });
+    default:
+      return state;
+  }
+};
 
-  componentDidMount() {
+const appInitialState = {
+  loading: true,
+  todos: [],
+};
+
+const AppState = ({ children }) => {
+  const [state, dispatch] = useReducer(appStateReducer, appInitialState);
+  const throwEffectError = useEffectError();
+
+  useEffect(() => {
     initialTodos()
-      .then(todos => this.setState({ loading: false, todos }))
-      .catch(() =>
-        this.setState(() => {
-          throw new Error("Cannot load todos");
-        }),
-      );
-  }
+      .then(todos => dispatch({ type: "LOAD_TODOS", todos }))
+      .catch(throwEffectError);
+  }, [throwEffectError]);
 
-  render() {
-    const api = {
-      loading: this.state.loading,
-      todos: this.state.todos,
-      counters: this.getCounters(),
-      addTodo: this.addTodo,
-      updateTodo: this.updateTodo,
-      removeTodo: this.removeTodo,
-    };
+  const addTodo = todo => dispatch({ type: "ADD_TODO", todo });
+  const updateTodo = (id, pending) => dispatch({ type: "UPDATE_TODO", id, pending });
+  const removeTodo = id => dispatch({ type: "REMOVE_TODO", id });
 
-    return <StateContext.Provider value={api}>{this.props.children}</StateContext.Provider>;
-  }
-}
+  const api = {
+    loading: state.loading,
+    todos: state.todos,
+    counters: getCounters(state.todos),
+    addTodo,
+    updateTodo,
+    removeTodo,
+  };
+
+  return <StateContext.Provider value={api}>{children}</StateContext.Provider>;
+};
 
 export const WithState = ({ children }) => <StateContext.Consumer>{api => children(api)}</StateContext.Consumer>;
 
@@ -82,5 +98,7 @@ export const withState = Comp => {
   Wrapper.displayName = `WithState(${Comp.name || Comp.displayName})`;
   return Wrapper;
 };
+
+export const useAppState = () => useContext(StateContext);
 
 export default AppState;

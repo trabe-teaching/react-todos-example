@@ -1,16 +1,11 @@
 import React, { Component } from "react";
+import useTitle from "../hooks/use-title";
 
 const withTitle = Comp => {
-  class Wrapper extends Component {
-    componentDidMount() {
-      document.title = this.props.title || document.title;
-    }
-
-    render() {
-      const { title, ...rest } = this.props;
-      return <Comp {...rest} />;
-    }
-  }
+  const Wrapper = ({ title, ...rest }) => {
+    useTitle(title);
+    return <Comp {...rest} />;
+  };
 
   Wrapper.displayName = `withTitle(${Component.name || Component.displayName})`;
 
